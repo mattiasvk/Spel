@@ -1,0 +1,99 @@
+use speldb;
+
+create table if not exists speldb.player
+(
+    id int not null,
+    name varchar(80) not null,
+    primary key(id)
+);
+
+insert into speldb.player values (1, 'Daniel');
+insert into speldb.player values (2, 'Johan');
+insert into speldb.player values (3, 'Marcus');
+insert into speldb.player values (4, 'Mattias');
+insert into speldb.player values (5, 'Stefan');
+
+create table if not exists speldb.game
+(
+    id int not null,
+    name varchar(80) not null,
+    type int not null,
+    primary key(id)
+);
+
+insert into speldb.game values (1, '7 Wonders', 1);
+insert into speldb.game values (2, 'Alfapet', 1);
+insert into speldb.game values (3, 'Backammon', 1);
+insert into speldb.game values (4, 'Canasta', 1);
+insert into speldb.game values (5, 'Carcassonne', 1);
+insert into speldb.game values (6, 'Diamanten', 1);
+insert into speldb.game values (7, 'Dungeon Raiders', 1);
+insert into speldb.game values (8, 'Hansa', 1);
+insert into speldb.game values (9, 'MIG', 1);
+insert into speldb.game values (10, 'Monopol', 1);
+insert into speldb.game values (11, 'Nya Finans', 1);
+insert into speldb.game values (12, 'Unknown', 1);
+insert into speldb.game values (13, 'Plump Extended', 1);
+insert into speldb.game values (14, 'Plump Satsning', 1);
+insert into speldb.game values (15, 'Poker', 1);
+insert into speldb.game values (16, 'Puerto Rico', 1);
+insert into speldb.game values (17, 'Risk', 1);
+insert into speldb.game values (18, 'Roborally', 1);
+insert into speldb.game values (19, 'San Juan', 1);
+insert into speldb.game values (20, 'Settlers', 1);
+insert into speldb.game values (21, 'Trivial Pursuit', 1);
+insert into speldb.game values (22, 'Ubongo', 1);
+insert into speldb.game values (23, 'Yatzy', 1);
+
+
+insert into speldb.game values (24, '');
+
+insert into speldb.game values (2, '');
+insert into speldb.game values (2, '');
+insert into speldb.game values (2, '');
+insert into speldb.game values (2, '');
+
+
+
+
+
+
+
+Game
+Id		int
+Name	varchar(100)
+Type	int
+
+GameType
+Id		int
+Name	varchar(100)
+
+Player
+Id		int
+Name	varchar(100)
+
+Season
+Id		int
+Name	varchar(100)
+
+PlayedGame
+id		int
+date	date
+season	int	(FK)
+host	int (FK)
+game	int (FK)
+gid		int
+p1pos	int
+p1point	float
+p2pos	int
+p2point	float
+p3pos	int
+p3point	float
+p4pos	int
+p4point	float
+p5pos	int
+p5point	float
+
+
+
+
