@@ -2,9 +2,9 @@ use speldb;
 
 create table if not exists speldb.player
 (
-    id int not null,
+    playerid int not null,
     name varchar(80) not null,
-    primary key(id)
+    primary key(playerid)
 );
 
 insert into speldb.player values (1, 'Daniel');
@@ -15,10 +15,10 @@ insert into speldb.player values (5, 'Stefan');
 
 create table if not exists speldb.game
 (
-    id int not null,
+    gameid int not null,
     name varchar(80) not null,
     type int not null,
-    primary key(id)
+    primary key(gameid)
 );
 
 insert into speldb.game values (1, '7 Wonders', 1);
@@ -45,55 +45,55 @@ insert into speldb.game values (21, 'Trivial Pursuit', 1);
 insert into speldb.game values (22, 'Ubongo', 1);
 insert into speldb.game values (23, 'Yatzy', 1);
 
+create table if not exists speldb.gametype
+(
+    gametypeid int not null,
+    name varchar(80) not null,
+    primary key(gametypeid)
+);
 
-insert into speldb.game values (24, '');
+insert into speldb.gametype values (1, 'Undefined');
 
-insert into speldb.game values (2, '');
-insert into speldb.game values (2, '');
-insert into speldb.game values (2, '');
-insert into speldb.game values (2, '');
+create table if not exists speldb.season
+(
+    seasonid int not null,
+    name varchar(80) not null,
+    primary key(seasonid)
+);
 
-
-
-
-
-
-
-Game
-Id		int
-Name	varchar(100)
-Type	int
-
-GameType
-Id		int
-Name	varchar(100)
-
-Player
-Id		int
-Name	varchar(100)
-
-Season
-Id		int
-Name	varchar(100)
-
-PlayedGame
-id		int
-date	date
-season	int	(FK)
-host	int (FK)
-game	int (FK)
-gid		int
-p1pos	int
-p1point	float
-p2pos	int
-p2point	float
-p3pos	int
-p3point	float
-p4pos	int
-p4point	float
-p5pos	int
-p5point	float
+insert into speldb.season values (1, 'HT-2012');
+insert into speldb.season values (2, 'VT-2013');
+insert into speldb.season values (3, 'HT-2013');
+insert into speldb.season values (4, 'VT-2014');
+insert into speldb.season values (5, 'HT-2014');
 
 
+create table if not exists speldb.playedgame
+(
+    playedgameid int not null auto_increment,
+    date date not null,
+    seasonid int not null,
+    hostid int not null,
+    gameid int not null,
+    gid int not null,
+    p1pos int,
+    p1point float,
+    p2pos int,
+    p2point float,
+    p3pos int,
+    p3point float,
+    p4pos int,
+    p4point float,
+    p5pos int,
+    p5point float,
+    constraint playedgame_season_fkey
+           foreign key(seasonid) references speldb.season(seasonid),
+    constraint playedgame_host_fkey
+           foreign key(hostid) references player(playerid),
+    constraint playedgame_game_fkey
+           foreign key(gameid) references game(gameid),
+    primary key(playedgameid)
+);
 
+select * from speldb.playedgame
 
