@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<html ng-app="scoreApp">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, user-scalable=yes">
+	<title>Stats</title>
+
+	<!-- these three are jquery mandatory -->
+	<script type="text/javascript" src="includes/libs/jquery-1.10.2.min.js"></script>
+
+	<!-- these two are wui mandatory -->
+	<link rel="stylesheet" type="text/css" href="includes/libs/bootstrap.css" /> 
+
+	<!-- angularjs -->
+	<script type="text/javascript" src="includes/libs/angular.js"></script> 
+	<script type="text/javascript" src="includes/libs/bindonce.js"></script> 
+
+	<script type="text/javascript" src="includes/libs/ui-bootstrap-tpls-0.9.0.min.js"></script>
+	
+	<!-- for this particular file  -->
+	<script src="includes/scores.js"></script>
+	<script src="includes/httpservice.js"></script>
+	<script src="includes/stats.js"></script>
+	<script src="includes/menucontroller.js"></script>
+
+	<style type="text/css">
+		.evenrowclass tr:nth-child(even) {
+			background-color: rgb(240,240,240);
+		}
+		.input-mini { width: 4%; }
+		.input-mini2 { width: 7%;  }
+		.input-small2 { width: 5%; }
+		.input-small3 { width: 6%; }
+		.input-small { width: 7%; }
+		.input-medium { width: 10%;  }
+		.input-box { width: 95%;  }
+		table.inner { width: 100%;}
+
+		@media (min-width: 960px) {
+			.input-mini,
+			.input-mini2,
+			.input-small,
+			.input-small2,
+			.input-small3,
+			.input-medium,
+			.lowpadding {
+				padding-left: 2px !important;
+				padding-right: 2px !important;
+				padding-top: 1px !important;
+				padding-bottom: 1px !important;
+				font-size: 15px;
+			}
+
+			.extrasmall {
+				font-size: 12px;
+				padding-left: 1px !important;
+			}
+		}
+		@media (max-width: 959px) {
+			.input-mini,
+			.input-mini2,
+			.input-small,
+			.input-small2,
+			.input-small3,
+			.input-medium,
+			.lowpadding {
+				padding-left: 2px !important;
+				padding-right: 2px !important;
+				padding-top: 1px !important;
+				padding-bottom: 1px !important;
+				font-size: 8px;
+			}
+
+			.extrasmall {
+				font-size: 7px;
+				padding-left: 1px !important;
+			}
+		}
+
+	</style>
+</head>
+
+<body style="overflow:auto">
+	<div ng-controller="menuController">
+		<tabset>
+			<tab heading="Spel" select="loadSpel(false)">
+			</tab>
+			<tab heading="Stats" select="loadStats(true)" active="active">
+			</tab>
+			<tab heading="Admin" select="loadAdmin(false)">
+			</tab>
+		</tabset>
+	</div>
+	<div ng-controller="scoreController">
+		<tabset>
+			<tab heading="Games">
+				<div id="gamesHeader">
+					<table id="resulttable" class="table table-bordered table-condensed" style="table-layout:fixed; margin-bottom: 0px;">
+						<thead>
+							<tr>
+								<th class="input-small3">Season</th>
+								<th class="input-small">Date</th>
+								<th class="input-small3">Host</th>
+								<th class="input-medium">Game</th>
+								<th class="input-mini extrasmall">Daniel</th>
+								<th class="input-mini extrasmall">Johan</th>
+								<th class="input-mini extrasmall">Marcus</th>
+								<th class="input-mini extrasmall">Mattias</th>
+								<th class="input-mini extrasmall">Stefan</th>
+							</tr>
+							<tr>
+								<td class="input-small3"><form ng-submit="applyFilter()"><input type="text" placeholder="Filter..." ng-model="gameFilter.season" class="input-box" /></form></td>
+								<td class="input-small"><form ng-submit="applyFilter()"><input type="text" placeholder="Filter..." ng-model="gameFilter.date" class="input-box"/></form></td>
+								<td class="input-small3"><form ng-submit="applyFilter()"><input type="text" placeholder="Filter..." ng-model="gameFilter.host" class="input-box"/></form></td>
+								<td class="input-medium"><form ng-submit="applyFilter()"><input type="text" placeholder="Filter..." ng-model="gameFilter.game" class="input-box"/></form></td>
+								<td class="input-mini">{{averages[0] | number:2}}</td>
+								<td class="input-mini">{{averages[1] | number:2}}</td>
+								<td class="input-mini">{{averages[2] | number:2}}</td>
+								<td class="input-mini">{{averages[3] | number:2}}</td>
+								<td class="input-mini">{{averages[4] | number:2}}</td>
+							</tr>
+						</thead>
+					</table>
+				</div>
+				<div id ="gamesList">
+					<table id="resulttable2" class="table table-bordered table-condensed" style="table-layout:fixed; margin-bottom: 0px;">
+						<tr ng-class-even="{'evenrow': true}" ng-repeat="game in filteredItems" >
+							<td class="input-small3">{{game.season}}</td>
+							<td class="input-small">{{game.date}}</td>
+							<td class="input-small3">{{game.host}}</td>
+							<td class="input-medium">{{game.game}}</td>
+							<td class="input-mini">{{game.points[0] | number}}</td>
+							<td class="input-mini">{{game.points[1] | number}}</td>
+							<td class="input-mini">{{game.points[2] | number}}</td>
+							<td class="input-mini">{{game.points[3] | number}}</td>
+							<td class="input-mini">{{game.points[4] | number}}</td>
+						</tr>
+					</table>
+				</div>
+			</tab>
+			<tab heading="Average">
+				<div id="average" style="overflow-y: scroll;">
+					<table id="Table1" class="table table-bordered" style="table-layout:fixed">
+						<thead>
+							<tr>
+								<th class="input-medium"><a href="" ng-click="predicate = 'game'; reverse=!reverse">Game</a></th>
+								<th class="input-mini"><a href="" ng-click="predicate = 'gameTotal'; reverse=!reverse">Games Played</a></th>
+								<th class="input-mini"><a href="" ng-click="predicate = 'average[0]'; reverse=!reverse">Daniel</a></th>
+								<th class="input-mini"><a href="" ng-click="predicate = 'average[1]'; reverse=!reverse">Johan</a></th>
+								<th class="input-mini"><a href="" ng-click="predicate = 'average[2]'; reverse=!reverse">Marcus</a></th>
+								<th class="input-mini"><a href="" ng-click="predicate = 'average[3]'; reverse=!reverse">Mattias</a></th>
+								<th class="input-mini"><a href="" ng-click="predicate = 'average[4]'; reverse=!reverse">Stefan</a></th>
+							</tr>
+							<tr>
+								<td class="input-medium"><form ng-submit="applyFilter2()"><input type="text" placeholder="Filter..." ng-model="avgFilter.game" class="input-medium" /></form></td>
+								<td class="input-mini"></td>
+								<td class="input-mini"></td>
+								<td class="input-mini"></td>
+								<td class="input-mini"></td>
+								<td class="input-mini"></td>
+							</tr>
+						</thead>
+					</table>
+				</div>
+				<div id ="Div2" style="overflow-y: scroll;" resize padding="200">
+					<table id="Table2" class="table table-bordered" style="table-layout:fixed">
+						<tr ng-class-even="{'evenrow': true}" ng-repeat="game in filteredAvgItems | orderBy:predicate:reverse">
+							<td class="input-medium">{{game.game}}</td>
+							<td class="input-mini">{{game.gameTotal}}</td>
+							<td class="input-mini">{{game.average[0] | number:2}}</td>
+							<td class="input-mini">{{game.average[1] | number:2}}</td>
+							<td class="input-mini">{{game.average[2] | number:2}}</td>
+							<td class="input-mini">{{game.average[3] | number:2}}</td>
+							<td class="input-mini">{{game.average[4] | number:2}}</td>
+						</tr>
+					</table>
+				</div>
+			</tab>
+		</tabset>
+	</div>
+</body>
+</html>

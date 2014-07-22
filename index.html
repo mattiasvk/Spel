@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html ng-app="scoreApp">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Spel</title>
+
+	<!-- these three are jquery mandatory -->
+	<script type="text/javascript" src="includes/libs/jquery-1.10.2.min.js"></script>
+
+	<!-- these two are wui mandatory -->
+	<link rel="stylesheet" type="text/css" href="includes/libs/bootstrap.min.css" /> 
+
+	<!-- angularjs -->
+	<script type="text/javascript" src="includes/libs/angular.min.js"></script> 
+	<script type="text/javascript" src="includes/libs/bindonce.js"></script> 
+
+	<script type="text/javascript" src="includes/libs/ui-bootstrap-tpls-0.9.0.min.js"></script>
+	
+	<!-- for this particular file  -->
+	<script src="includes/scores.js"></script>
+	<script src="includes/main.js"></script>
+	<script src="includes/menucontroller.js"></script>
+	<script src="includes/httpservice.js"></script>
+	<script src="includes/ng-google-chart.js"></script>
+
+	<style type="text/css">
+		 .gridStyle {
+			border: 1px solid rgb(212,212,212);
+			width: 99%; 
+			height: 500px;
+		}
+		.row-1 {
+			background-color:#eeeeee !important;
+		}
+		.row-2 {
+			background-color:#cccccc !important;
+		}
+		.row-3 {
+			background-color:#aaaaaa !important;
+		}
+		.row-4 {
+			background-color:#888888 !important;
+		}
+		.row-5 {
+			background-color:#666666 !important;
+		}
+		.row2-5 {
+			background-color:#f37c7c !important;
+		}
+		.row2-4 {
+			background-color:#e59976 !important;
+		}
+		.row2-3 {
+			background-color:#d8b672 !important;
+		}
+		.row2-2 {
+			background-color:#cbd36e !important;
+		}
+		.row2-1 {
+			background-color:#bef16a !important;
+		}
+		.totalclass {
+			font-weight:bold;
+			
+		}
+		.normal-input
+		{
+			width:100px;
+		}
+		.small-input
+		{
+			width:60px;
+		}
+		.normal-select
+		{
+			width:100px;
+		}
+		.game-select
+		{
+			width:300px;
+		}
+		.table-nonfluid {
+			width: 70%;
+		}
+	</style>
+</head>
+
+<body style="overflow:auto">
+	<div ng-controller="menuController">
+		<tabset>
+			<tab heading="Spel" select="loadSpel(true)" active="active">
+			</tab>
+			<tab heading="Stats" select="loadStats(false)" >
+			</tab>
+			<tab heading="Admin" select="loadAdmin(false)">
+			</tab>
+		</tabset>
+	</div>
+	<div ng-controller="scoreController"><div id ="blaj">
+		<tabset>
+			<tab bindonce ng-repeat="(key, season) in seasons | object2Array | orderBy:'index'" heading="{{season.seasonName}}" active="season.active" select="resizeGraph()">
+				<accordion close-others="false">
+					
+					<div bindonce ng-repeat="night in season.nights ">
+					    <accordion-group>
+							<accordion-heading>
+								<table class="table-condensed table-striped table-nonfluid">
+									<tr bindonce>
+										<td><div style="width: 100px" ><span bo-text="night.date"></span></div></td><td><div style="width: 80px" ><span bo-text="night.host"></span></div></td>
+										<td bo-class="{'row2-1':night.endPositions[0]==1,'row2-2':night.endPositions[0]==2,'row2-3':night.endPositions[0]==3,'row2-4':night.endPositions[0]==4, 'row2-5':night.endPositions[0]==5 }" style="width: 55px">Daniel:</td><td bo-class="{'row2-1':night.endPositions[0]==1,'row2-2':night.endPositions[0]==2,'row2-3':night.endPositions[0]==3,'row2-4':night.endPositions[0]==4, 'row2-5':night.endPositions[0]==5 }"><div style="width: 35px" ><span bo-text="night.endPoints[0] | number:2"></span></div></td>
+										<td bo-class="{'row2-1':night.endPositions[1]==1,'row2-2':night.endPositions[1]==2,'row2-3':night.endPositions[1]==3,'row2-4':night.endPositions[1]==4, 'row2-5':night.endPositions[1]==5 }" style="width: 55px">Johan:</td><td bo-class="{'row2-1':night.endPositions[1]==1,'row2-2':night.endPositions[1]==2,'row2-3':night.endPositions[1]==3,'row2-4':night.endPositions[1]==4, 'row2-5':night.endPositions[1]==5 }"><div style="width: 35px" ><span bo-text="night.endPoints[1] | number:2"></span></div></td>
+										<td bo-class="{'row2-1':night.endPositions[2]==1,'row2-2':night.endPositions[2]==2,'row2-3':night.endPositions[2]==3,'row2-4':night.endPositions[2]==4, 'row2-5':night.endPositions[2]==5 }" style="width: 55px">Marcus:</td><td bo-class="{'row2-1':night.endPositions[2]==1,'row2-2':night.endPositions[2]==2,'row2-3':night.endPositions[2]==3,'row2-4':night.endPositions[2]==4, 'row2-5':night.endPositions[2]==5 }"><div style="width: 35px" ><span bo-text="night.endPoints[2] | number:2"></span></div></td>
+										<td bo-class="{'row2-1':night.endPositions[3]==1,'row2-2':night.endPositions[3]==2,'row2-3':night.endPositions[3]==3,'row2-4':night.endPositions[3]==4, 'row2-5':night.endPositions[3]==5 }" style="width: 55px">Mattias:</td><td bo-class="{'row2-1':night.endPositions[3]==1,'row2-2':night.endPositions[3]==2,'row2-3':night.endPositions[3]==3,'row2-4':night.endPositions[3]==4, 'row2-5':night.endPositions[3]==5 }"><div style="width: 35px" ><span bo-text="night.endPoints[3] | number:2"></span></div></td>
+										<td bo-class="{'row2-1':night.endPositions[4]==1,'row2-2':night.endPositions[4]==2,'row2-3':night.endPositions[4]==3,'row2-4':night.endPositions[4]==4, 'row2-5':night.endPositions[4]==5 }" style="width: 55px">Stefan:</td><td bo-class="{'row2-1':night.endPositions[4]==1,'row2-2':night.endPositions[4]==2,'row2-3':night.endPositions[4]==3,'row2-4':night.endPositions[4]==4, 'row2-5':night.endPositions[4]==5 }"><div style="width: 35px" ><span bo-text="night.endPoints[4] | number:2"></span></div></td>
+									</tr>
+								</table>
+							</accordion-heading>
+							<table class="table table-nonfluid">
+								<tr>
+									<th>Game</th>
+									<th>Daniel</th>
+									<th>Johan</th>
+									<th>Marcus</th>
+									<th>Mattias</th>
+									<th>Stefan</th>
+								</tr>
+								<tr bo-class="{'row-1':game.gid==1,'row-2':game.gid==2,'row-3':game.gid==3,'row-4':game.gid==4,'row-5':game.gid==5}" bindonce ng-repeat="game in night.games">
+									<td><span bo-text="game.game"></span></td>
+									<td><span bo-text="game.points[0] | number:2"></span></td>
+									<td><span bo-text="game.points[1] | number:2"></span></td>
+									<td><span bo-text="game.points[2] | number:2"></span></td>
+									<td><span bo-text="game.points[3] | number:2"></span></td>
+									<td><span bo-text="game.points[4] | number:2"></span></td>
+								</tr>
+								<tr>
+									<td style="font-weight:bold">Total:</td>
+									<td class="totalclass"><span bo-text="night.totalPoints[0] | number:2"></span></td>
+									<td class="totalclass"><span bo-text="night.totalPoints[1] | number:2"></span></td>
+									<td class="totalclass"><span bo-text="night.totalPoints[2] | number:2"></span></td>
+									<td class="totalclass"><span bo-text="night.totalPoints[3] | number:2"></span></td>
+									<td class="totalclass"><span bo-text="night.totalPoints[4] | number:2"></span></td>
+								</tr>
+								
+							</table>
+						</accordion-group>
+					</div>
+				</accordion>
+				<div>
+					<table bindonce class="table table-condensed table-striped table-nonfluid">
+						<tr>
+								<th class="col-sm-1">Date</th>
+								<th class="col-sm-1">Host</th>
+								<th class="col-sm-1">Daniel (<span bo-text="season.gamesPlayed[0]"></span>)</th>
+								<th class="col-sm-1">Johan (<span bo-text="season.gamesPlayed[1]"></span>)</th>
+								<th class="col-sm-1">Marcus (<span bo-text="season.gamesPlayed[2]"></span>)</th>
+								<th class="col-sm-1">Mattias (<span bo-text="season.gamesPlayed[3]"></span>)</th>
+								<th class="col-sm-1">Stefan (<span bo-text="season.gamesPlayed[4]"></span>)</th>
+						</tr>
+						<tr bindonce ng-repeat="night in season.nights">
+							<td><span bo-text="night.date"></span></td>
+							<td><span bo-text="night.host"></span></td>
+							<td><span bo-text="night.endPoints[0] | number:2"></span></td>
+							<td><span bo-text="night.endPoints[1] | number:2"></span></td>
+							<td><span bo-text="night.endPoints[2] | number:2"></span></td>
+							<td><span bo-text="night.endPoints[3] | number:2"></span></td>
+							<td><span bo-text="night.endPoints[4] | number:2"></span></td>
+						</tr>
+						<tr style="font-weight:bold">
+							<td></td>
+							<td>Total:</td>
+							<td><span bo-text="season.total[0] | number:2"></span></td>
+							<td><span bo-text="season.total[1] | number:2"></span></td>
+							<td><span bo-text="season.total[2] | number:2"></span></td>
+							<td><span bo-text="season.total[3] | number:2"></span></td>
+							<td><span bo-text="season.total[4] | number:2"></span></td>
+						</tr>
+						<tr style="font-weight:bold">
+							<td></td>
+							<td>Average:</td>
+							<td><span bo-text="season.average[0] | number:2"></span></td>
+							<td><span bo-text="season.average[1] | number:2"></span></td>
+							<td><span bo-text="season.average[2] | number:2"></span></td>
+							<td><span bo-text="season.average[3] | number:2"></span></td>
+							<td><span bo-text="season.average[4] | number:2"></span></td>
+						</tr>
+					</table>
+				</div>
+				<div google-chart chart="season.graphData" style="{{season.graphData.cssStyle}}" on-ready="chartReady()" />
+			</tab>
+		</tabset>
+	</div></div>
+</body>
+</html>

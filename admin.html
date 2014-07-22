@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html ng-app="scoreApp">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Admin</title>
+
+	<!-- these three are jquery mandatory -->
+	<script type="text/javascript" src="includes/libs/jquery-1.10.2.min.js"></script>
+
+	<!-- these two are wui mandatory -->
+	<link rel="stylesheet" type="text/css" href="includes/libs/bootstrap.min.css" /> 
+
+	<!-- angularjs -->
+	<script type="text/javascript" src="includes/libs/angular.min.js"></script> 
+
+	<script type="text/javascript" src="includes/libs/ui-bootstrap-tpls-0.9.0.min.js"></script>
+	
+	<!-- for this particular file  -->
+	<script src="includes/scores.js"></script>
+	<script src="includes/httpservice.js"></script>
+	<script src="includes/admin.js"></script>
+	<script src="includes/menucontroller.js"></script>
+
+	<style type="text/css">
+		.normal-input
+		{
+			width:100px;
+		}
+		.small-input
+		{
+			width:60px;
+		}
+		.normal-select
+		{
+			width:100px;
+		}
+		.game-select
+		{
+			width:300px;
+		}
+		.table-nonfluid {
+			width: 50%;
+		}
+		.input-mini { width: 40px; } .input-small { width: 90px; } .input-medium { width: 120px; } .input-medium2 { width: 150px; } .input-large { width: 210px; } .input-xlarge { width: 270px; } .input-xxlarge { width: 530px; }
+		.tdred {
+			background-color: red;
+		}
+	</style>
+</head>
+
+<body style="overflow:auto">
+	<div ng-controller="menuController">
+		<tabset>
+			<tab heading="Spel" select="loadSpel(false)">
+			</tab>
+			<tab heading="Stats" select="loadStats(false)" >
+			</tab>
+			<tab heading="Admin" select="loadAdmin(true)" active="active">
+			</tab>
+		</tabset>
+	</div>
+	<div ng-controller="scoreController">
+				<div class="form-group">
+					<div ng-init="seasonSearchCriteria='VT-2014'">
+						<select ng-model="seasonSearchCriteria">
+							<option value="All">All</option>
+							<option value="VT-2014">VT-2014</option>
+							<option value="HT-2013">HT-2013</option>
+							<option value="VT-2013">VT-2013</option>
+							<option value="HT-2012">HT-2012</option>
+						</select>
+					</div>
+					<div style="overflow-y: scroll;" resize padding="180">
+					<table class="table table-condensed" >
+						<tr>
+							<th>Season</th>
+							<th>Date</th>
+							<th>Host</th>
+							<th>Game</th>
+							<th>gid</th>
+							<th>Daniel</th>
+							<th>Johan</th>
+							<th>Marcus</th>
+							<th>Mattias</th>
+							<th>Stefan</th>
+							<th>Delete</th>
+						</tr>
+						<tr ng-repeat="game in allGames | filter: seasonFilter">
+							<td><select class="form-control input-medium" ng-model="game.season" ng-options="season for season in allSeasons"/></td>
+							<td ng-class="{'tdred' : game.new == true}"><input class="form-control" type="text" ng-model="game.date"/></td>
+							<td><select class="form-control input-medium" ng-model="game.host" ng-options="player for player in allPlayers" /></td>
+							<td><select class="form-control" ng-model="game.game" ng-options="game for game in gameNames" /></td>
+							<td><input class="form-control input-mini" type="text" ng-model="game.gid" /></td>
+							<td><input class="form-control input-mini" type="text" ng-model="game.positions[0]" /></td>
+							<td><input class="form-control input-mini" type="text" ng-model="game.positions[1]" /></td>
+							<td><input class="form-control input-mini" type="text" ng-model="game.positions[2]" /></td>
+							<td><input class="form-control input-mini" type="text" ng-model="game.positions[3]" /></td>
+							<td><input class="form-control input-mini" type="text" ng-model="game.positions[4]" /></td>
+							<td><button class="btn btn-default btn-sm" ng-click="deleteGame(game)">Delete</button></td>
+						</tr>
+					</table>
+					</div>
+				</div>
+				<button class="btn btn-default btn-sm" ng-click="addGame()">Add</button><br>
+				<button class="btn btn-default btn-sm" ng-click="load()">Load</button>
+				<button class="btn btn-default btn-sm" ng-click="save(passwd)">Save</button>
+				<input ng-model="passwd" type="password" style="width: 145px" placeholder="Password" />
+				<div class="form-group">
+				<table class="table table-condensed table-striped" style="width:30%">
+					<tr>
+						<th>Games</th>
+						<th></th>
+					</tr>
+					<tr ng-repeat="game in gameNames track by $index">
+						<td><input class="form-control" type="text" ng-model="gameNames[$index]"/></td>
+						<td><button class="btn btn-default btn-sm" ng-click="deleteGameName(game)">Delete</button></td>
+					</tr>
+				</table>
+				<button class="btn btn-default btn-sm" ng-click="addGameName()">Add</button>
+				<button class="btn btn-default btn-sm" ng-click="sortGameNames()">Sort</button>
+				</div>
+	</div>
+</body>
+</html>
