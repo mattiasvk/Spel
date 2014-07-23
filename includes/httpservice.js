@@ -1,6 +1,23 @@
 angular.module("httpModule", [])
 	.factory("httpService", function () {
 		return {
+            loadDbTest: function (callback) {
+                $.ajax({
+                    type: 'POST',
+                    url: 'loadDBTest.pl',
+                    dataType: 'json',
+                    data: { action: "request" },
+                    success: function (data) {
+                        //data = saveAll;
+                        callback(data);
+                    },
+                    error: function (data) {
+                        data = 'Loading from DB Failed';
+                        callback(data);
+                        //alert("Failed loading games.");
+                    }
+                });
+            },
 			loadMain: function (callback) {
 				$.ajax({
 					type: 'POST',

@@ -13,13 +13,120 @@ angular.module('scoreApp', ['ui.bootstrap', 'pasvaz.bindonce', 'googlechart', 'h
 var scoreController = function ($scope, httpService) {
 	$scope.httpService = httpService;
 
+    $scope.players = {"Daniel" : 1, "Johan" : 2, "Marcus" : 3, "Mattias" : 4, "Stefan" : 5};
+    $scope.seasonName = {"HT-2012" : 1, "VT-2013" : 2, "HT-2013" : 3, "VT-2014" : 4, "HT-2014" : 5};
+    $scope.gameName =
+    {
+        "7 Wonders" : 1,
+        "Alfapet" : 2,
+        "Backgammon" : 3,
+        "Canasta" : 4,
+        "Carcassonne" : 5,
+        "Diamanten" : 6,
+        "Dungeon Raiders" : 7,
+        "Hansa" : 8,
+        "MIG" : 9,
+        "Monopol" : 10,
+        "Nya Finans" : 11,
+        "Unknown" : 12,
+        "Plump Extended" : 13,
+        "Plump Satsning" : 14,
+        "Plump Vanilj" : 15,
+        "Poker" : 16,
+        "Puerto Rico" : 17,
+        "Risk" : 18,
+        "Roborally" : 19,
+        "San Juan" : 20,
+        "Settlers" : 21,
+        "Trivial Pursuit" : 22,
+        "Ubongo" : 23,
+        "Yatzy" : 24
+    };
 	$scope.httpService.loadMain(function(data) {
 		$scope.$apply(function () {
+            $scope.printValues(data);
 			$scope.seasons = data.main.seasons;
 			$scope.seasons['VT-2014'].active = true;
-			$scope.calculateGraphValues();
+			//$scope.calculateGraphValues();
 		});
 	});
+
+    $scope.printValues = function(data) {
+        var sql = '';
+        angular.forEach(data.main.seasons, function (season, index) {
+            //console.log(index);
+
+            angular.forEach(season.nights, function (night, index2) {
+                //console.log(night);
+              //console.log(night.date);
+              //console.log(night.host);
+              //  console.log($scope.players[night.host]);
+              //console.log(night.endPoints);
+              //console.log(night.endPositions);
+               // console.log(night);
+
+
+           /*     console.log("Insert into speldb.night values ("
+                   + $scope.seasonName[index] + ", '"
+                    + night.date + "', "
+                    + $scope.players[night.host] + ", "
+                    + night.endPositions[0] + ", "
+                    + night.endPoints[0] + ", "
+                    + night.endPositions[1] + ", "
+                    + night.endPoints[1] + ", "
+                    + night.endPositions[2] + ", "
+                    + night.endPoints[2] + ", "
+                    + night.endPositions[3] + ", "
+                    + night.endPoints[3] + ", "
+                    + night.endPositions[4] + ", "
+                    + night.endPoints[4] + "); "
+                );
+             */
+                sql = sql + "Insert into speldb.night values (DEFAULT, "
+                    + $scope.seasonName[index] + ", "
+                    + "STR_TO_DATE('" + night.date + "', '%Y-%m-%d')"
+                    + ", "
+                    + $scope.players[night.host] + ", "
+                    + night.endPositions[0] +", "
+                    + night.endPoints[0] + ", "
+                    + night.endPositions[1] +", "
+                    + night.endPoints[1] + ",  "
+                    + night.endPositions[2] + ", "
+                    + night.endPoints[2] + ", "
+                    + night.endPositions[3] + ", "
+                    + night.endPoints[3] + ", "
+                    + night.endPositions[4] + ", "
+                    + night.endPoints[4] + ");\n ";
+
+                angular.forEach(night.games, function (game, index3) {
+                  //  console.log(game);
+         /*           console.log("Insert into speldb.playedgame values ((select nightid from night ORDER BY nightid DESC limit 1) ,",
+                    $scope.gameName[game.game], ", ", game.gid, ", "
+                         ,game.points[0] , ", "
+                         ,game.points[1] , ", "
+                         ,game.points[2] , ", "
+                         ,game.points[3] , ", "
+                         ,game.points[0] , "); "
+
+                    );
+            */
+                    sql = sql + "Insert into speldb.playedgame values (DEFAULT, (select nightid from night ORDER BY nightid DESC limit 1) ,"
+                        + $scope.gameName[game.game] + ", " + game.gid + ", "
+                        + game.points[0] + ", "
+                        + game.points[1] + ", "
+                        + game.points[2] + ", "
+                        + game.points[3] + ", "
+                        + game.points[0] + "); ";
+                });
+
+            });
+        });
+        console.log(sql);
+    }
+
+    $scope.httpService.loadDbTest(function(data) {
+        console.log(data);
+    });
 
 	$scope.navType = 'pills';
 
