@@ -1,10 +1,10 @@
 angular.module("httpModule", [])
 	.factory("httpService", function () {
 		return {
-            loadDbTest: function (callback) {
+            loadNightsBySeason: function (callback) {
                 $.ajax({
                     type: 'POST',
-                    url: 'loadDBTest.pl',
+                    url: 'loadNightsBySeason.pl',
                     dataType: 'json',
                     data: { action: "request" },
                     success: function (data) {
@@ -12,7 +12,7 @@ angular.module("httpModule", [])
                         callback(data);
                     },
                     error: function (data) {
-                        data = 'Loading from DB Failed';
+                        //data = 'Loading from DB Failed';
                         callback(data);
                         //alert("Failed loading games.");
                     }

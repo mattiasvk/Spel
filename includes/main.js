@@ -44,7 +44,7 @@ var scoreController = function ($scope, httpService) {
     };
 	$scope.httpService.loadMain(function(data) {
 		$scope.$apply(function () {
-            $scope.printValues(data);
+           // $scope.printValues(data);
 			$scope.seasons = data.main.seasons;
 			$scope.seasons['VT-2014'].active = true;
 			//$scope.calculateGraphValues();
@@ -124,8 +124,9 @@ var scoreController = function ($scope, httpService) {
         console.log(sql);
     }
 
-    $scope.httpService.loadDbTest(function(data) {
-        console.log(data);
+    $scope.httpService.loadNightsBySeason(function(data) {
+        //console.log(data.nights);
+        $scope.nights = data.nights;
     });
 
 	$scope.navType = 'pills';
